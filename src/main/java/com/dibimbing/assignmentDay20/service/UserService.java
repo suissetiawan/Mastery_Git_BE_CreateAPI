@@ -30,6 +30,14 @@ public class UserService {
             return GenerateResponse.generate("Age is required", HttpStatus.BAD_REQUEST, null);
         }
 
+        if (request.getUsername().length() < 5) {
+            return GenerateResponse.generate("Username must be at least 5 characters long", HttpStatus.BAD_REQUEST, null);
+        }
+
+        if (request.getPassword().length() < 8) {
+            return GenerateResponse.generate("Password must be at least 8 characters long", HttpStatus.BAD_REQUEST, null);
+        }
+
         User cekDuplicate = userRepository.findByUsername(request.getUsername());
         if (cekDuplicate != null) {
             return GenerateResponse.generate("User already exists", HttpStatus.BAD_REQUEST, null);
