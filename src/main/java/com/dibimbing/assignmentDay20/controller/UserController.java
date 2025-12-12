@@ -25,4 +25,14 @@ public class UserController {
         return userService.registerUser(user);
     }
 
+    @GetMapping("/login")
+    public ResponseEntity<Map<String, Object>> userLogin(LoginRequestDTO request){
+        return userService.loginUser(request);
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<Map<String, Object>> getUserById(@PathVariable String id){
+        return userService.GetUserById(id);
+    }
+
 }
