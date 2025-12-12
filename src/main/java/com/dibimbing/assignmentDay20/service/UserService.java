@@ -30,6 +30,14 @@ public class UserService {
             return GenerateResponse.generate("Age is required", HttpStatus.BAD_REQUEST, null);
         }
 
+        if (request.getUsername().length() < 5) {
+            return GenerateResponse.generate("Username must be at least 5 characters long", HttpStatus.BAD_REQUEST, null);
+        }
+
+        if (request.getPassword().length() < 8) {
+            return GenerateResponse.generate("Password must be at least 8 characters long", HttpStatus.BAD_REQUEST, null);
+        }
+
         User cekDuplicate = userRepository.findByUsername(request.getUsername());
         if (cekDuplicate != null) {
             return GenerateResponse.generate("User already exists", HttpStatus.BAD_REQUEST, null);
@@ -47,5 +55,37 @@ public class UserService {
         UserResponseDTO res = GenerateResponse.mappedResponse(user);
 
         return GenerateResponse.generate("User registered successfully", HttpStatus.CREATED, res);
+    }
+
+    public ResponseEntity<Map<String, Object>> loginUser(LoginRequestDTO request) {
+        if (request.getUsername() == null) {
+            return GenerateResponse.generate("Username is required", HttpStatus.BAD_REQUEST, null);
+        } else if (request.getPassword() == null) {
+            return GenerateResponse.generate("Password is required", HttpStatus.BAD_REQUEST, null);
+        }
+
+        User user = userRepository.findByUsername(request.getUsername());
+        if (user == null) {
+            return GenerateResponse.generate("User not found", HttpStatus.NOT_FOUND, null);
+        }
+
+        if (!user.getPassword().equals(request.getPassword())) {
+            return GenerateResponse.generate("Invalid Credentials", HttpStatus.UNAUTHORIZED, null);
+        }
+
+        UserResponseDTO res = GenerateResponse.mappedResponse(user);
+        return GenerateResponse.generate("Login successfully", HttpStatus.OK, res);
+        
+    }
+
+    public ResponseEntity<Map<String, Object>> GetUserById (String id){
+        User user = userRepository.findById(Long.valueOf(id));
+        
+        if (user == null) {
+            return GenerateResponse.generate("User not found", HttpStatus.NOT_FOUND, null);
+        }
+
+        UserResponseDTO res = GenerateResponse.mappedResponse(user);
+        return GenerateResponse.generate("Find user successfully", HttpStatus.OK, res);
     }
 }
